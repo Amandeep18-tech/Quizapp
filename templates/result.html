@@ -1,0 +1,38 @@
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+      <div class="media">
+        <div class="media-body">
+          <h2 class="account-heading">{{ user.username }}</h2>
+          <p class="text-secondary">Your score {{score}} out of {{lenlst}}</p>
+          <p class="text-secondary">{{ user.email }}</p>
+          <input type="submit" value="Click to get Answers" id="button1" onclick="getanswers();" />
+          
+          <br>
+          <b id="UserAnswers" style="color:green;" ></b>
+        </div>
+      </div>
+      <!-- FORM HERE -->
+    </div>
+    
+    <!-- <script>
+     
+      function getanswers() {
+        //document.getElementById("UserAnswers").innerHTML = "";  
+        var i=0;
+        document.getElementById("UserAnswers").innerHTML = `
+          <p>  
+            {%for correct_ans in results %}
+                <br>The answer for the {{correct_ans.id}} question is {{correct_ans.Correct_ans}}
+            {% endfor%}
+
+            </p>
+
+        `;
+            
+        
+      }
+      </script>   -->
+{% endblock content %}
