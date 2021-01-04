@@ -6,7 +6,7 @@
       <div class="media">
         <div class="media-body">
           <h2 class="account-heading">{{ user.username }}</h2>
-          <p class="text-secondary">Your score {{score}} out of {{lenlst}}</p>
+          <p class="text-secondary">Your score {{savedata.score}} out of {{lenlst}}</p>
           <p class="text-secondary">{{ user.email }}</p>
           <input type="submit" value="Click to get Answers" id="button1" onclick="getanswers();" />
           
@@ -17,10 +17,10 @@
       <!-- FORM HERE -->
     </div>
     
-    <!-- <script>
-     
+    
+     <script>
       function getanswers() {
-        //document.getElementById("UserAnswers").innerHTML = "";  
+        document.getElementById("UserAnswers").innerHTML = "";  
         var i=0;
         document.getElementById("UserAnswers").innerHTML = `
           <p>  
@@ -34,5 +34,5 @@
             
         
       }
-      </script>   -->
+    </script>
 {% endblock content %}

@@ -202,6 +202,7 @@
         <hr>
 
             <form method="POST" id="myform">
+                {% csrf_token %} 
                         {{result.id}} ) {{result.Question}}
                     </br>
                     <input type="radio" id=Option1 value="{{result.Option1}}" class="rb"
@@ -215,10 +216,11 @@
                     <label id="correct_ans" class="rb" style="display: none; color: green;"><b>The Correct answer is:
                     {{result.Correct_ans}}</b></label>      
         </hr>
-        </form>
+        <input type="hidden" name="question_id" value="{{result.id}}">
         {% endfor %}
 
-        <input type="submit" value="Click ans" id="button1" onclick="getAnswers();" />
+        <input type="text" name="answer" id="value"  />
+    </form>
         <br>
        <b id="UserAnswers"></b>
        <div class="paginetor">
@@ -242,9 +244,6 @@
                 $(".rb").attr("disabled", true);
             });
         });
-      
-        
-
         function getAnswers() {
             document.getElementById("UserAnswers").innerHTML = "";
             var e = document.getElementsByTagName('Input');
@@ -253,6 +252,7 @@
                     if (e[i].checked) {
                         document.getElementById("UserAnswers").innerHTML += "Q" + e[i].name + ")." + 
                         "The answer you have selected is:" + e[i].value + "</br>";
+                       
                         
                     }
                 }
@@ -278,7 +278,19 @@
 
         }
         setInterval(updatecountdown, 1000);
-       
+        $(document).ready(function()
+    {
+        $('.rb').click(function(){
+            var txt="";
+            $('.rb:checked').each(function()
+            {
+                txt+=$(this).val
+            });
+            $('#answer').val(txt);
+        }
+        );
+    }
+    );
     </script>
     <script src="{% static 'script.js' %}">
                 </script>
