@@ -186,34 +186,32 @@
     <div style="padding-left: 60px;">
         
            
+        {% for result in fill_in %}
+      
+            <p id="countdown_1" style="position: relative; left:1150px; padding: 0%;"></p>
+        <hr>
+            <form method="POST" id="myform">
+                
         
-        {% for result in results %}
             <p id="countdown_1" style="position: relative; left:1150px; padding: 0%;"></p>
         <hr>
             <form method="POST" id="myform">
                 {% csrf_token %} 
                         {{result.id}} ) {{result.question}}
                     </br>
-                    <input type="radio" id=Option1 value="{{result.option1}}" class="rb"
-                        name="name"> {{result.option1}}<br>
-                    <input type="radio" id=Option2 value="{{result.option2}}" class="rb"
-                        name="name"> {{result.option2}}<br>
-                    <input type="radio" id=Option3 value="{{result.option3}}" class="rb"
-                        name="name"> {{result.option3}} <br>               
-                    <input type="radio" id=Option4 value="{{result.option4}}" class="rb"
-                        name="name"> {{result.option4}}<br>
-                    <label id="correct_ans" class="rb" style="display: none; color: green;"><b>The Correct answer is:
-                    {{result.correct_ans}}</b></label>      
+                    <br>
+                    <input type="text" id=Answer
+                        name="name"> <br>
+                  
         </hr>
-        <input type="hidden" name="question_id" value="{{result.id}}">
         {% endfor %}
-       
-        <input type="text" name="answer" id="value"  />
     </form>
-        <br>
+   
+        
+      
        <b id="UserAnswers"></b>
        {% if is_paginated %}
-
+       <br>
             {% if page_obj.has_previous %}
                 <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
                 <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
@@ -233,7 +231,7 @@
                 
 
             {% else %}
-                <a class="btn btn-outline-info mb-4" href="{% url 'fill-in-page' %}" id="button1">Next</a>
+                <a class="btn btn-outline-info mb-4" href="#" id="button1">Submit</a>
 
                 {% endif %}
 

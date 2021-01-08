@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from Quizapp.models import Exam, UserResults
+from Quizapp.models import Exam, UserResults, FillTheBlanks
 from users.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -20,3 +20,11 @@ class ResultPageListView(LoginRequiredMixin, ListView):
     model = Exam
     template_name = 'result.html'
     context_object_name = 'results'
+
+
+class FillInView(LoginRequiredMixin,ListView):
+    model = FillTheBlanks
+    template_name = 'fill_in.html'
+    context_object_name = 'fill_in'
+    paginate_by = 1
+

@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import ExamListView,ResultPageListView
+from .views import ExamListView,ResultPageListView,FillInView
 from users import views as user_views
 
 urlpatterns = [
@@ -26,6 +26,7 @@ urlpatterns = [
     path('logout/',auth_views.LogoutView.as_view(template_name='logout.html'),name='logout'),
     path('profile/', user_views.ProfileCreateView.as_view(),name='profile'),
     path('quiz/',ExamListView.as_view(),name='question-page'),
+    path('quiz_fill_in/',FillInView.as_view(),name='fill-in-page'),
     path('password-reset/',
             auth_views.PasswordResetView.as_view(
                 template_name='password_reset.html'),
