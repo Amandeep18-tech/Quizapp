@@ -1,21 +1,21 @@
-from django.shortcuts import render,redirect,reverse
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserRegisterForm
-# Create your views here.
-def register(request):
-    if request.method=='POST':
-        form=UserRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username=form.cleaned_data.get('username')
-            messages.success(request,f'Your account has been created')
-            return redirect(reverse('login'))
-    else:
-        form=UserRegisterForm()
-        return render(request,'register.html',{'form':form})
+from django.views.generic.edit import CreateView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Profile
 
-@login_required
-def profile(request):
-    return render(request, 'profile.html')
 
+class SignUpView(SuccessMessageMixin, CreateView):
+  template_name = 'register.html'
+  success_url = 'login'
+  form_class = UserRegisterForm
+  success_message = "Your profile was created successfully"
+
+
+class ProfileCreateView(LoginRequiredMixin, CreateView):
+    model = Profile
+    fields = '__all__'
+    template_name = 'profile.html'
