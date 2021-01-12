@@ -4,27 +4,31 @@
 <!DOCTYPE html>
 
 <head>
-      <!-- Required meta tags -->
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  
-      <!-- Bootstrap CSS -->
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  
-      <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
     <title>
         Django Online quiz App
     </title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <style>
-        .btn-primary{
+        .btn-primary {
             width: 10%;
         }
-        .btn-success{
+
+        .btn-success {
             width: 10%;
         }
-        <!--
+
+        < !--
+
         /* @group Blink */
         .blink {
             -webkit-animation: blink .75s linear infinite;
@@ -123,7 +127,7 @@
                 opacity: 0;
             }
         }
-        
+
 
         /* @end */
         -->
@@ -134,137 +138,151 @@
 
 <body>
     <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-        <div class="container">
-          <a class="navbar-brand mr-4" >Django Quiz</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarToggle">
-            <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{% url 'question-page' %}" >Home</a>
-              <a class="nav-item nav-link" href="{% url 'profile'%}" >Profile</a>
+        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <div class="container">
+                <a class="navbar-brand mr-4">Django Quiz</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <div class="navbar-nav mr-auto">
+                        <a class="nav-item nav-link" href="{% url 'question-page' %}">Home</a>
+                        <a class="nav-item nav-link" href="{% url 'profile'%}">Profile</a>
+                    </div>
+                    <!-- Navbar Right Side -->
+                    <div class="navbar-nav">
+                        {% if user.is_authenticated %}
+
+                        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                        {% else %}
+                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <!-- Navbar Right Side -->
-            <div class="navbar-nav">
-                {% if user.is_authenticated %}
-                
-                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-                {% else %}
-                    <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                    <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-      </nav>
+        </nav>
     </header>
     <main role="main" class="container">
-      <div class="row">
-        <div class="col-md-8">
-            {% if messages%}
+        <div class="row">
+            <div class="col-md-8">
+                {% if messages%}
                 {% for message in messages%}
-                    <div class="alert alert-{{message.tags}}">
-                        {{message}}
-                    </div>
+                <div class="alert alert-{{message.tags}}">
+                    {{message}}
+                </div>
                 {% endfor %}
-            {% endif %}
-          
+                {% endif %}
+
+            </div>
+
         </div>
-        
-      </div>
     </main>
     <center>
-    
+
         <h1>Welcome to the quiz app {{user.username}}</h1>
-        
+
         <hr>
         </hr>
     </center>
 
     </h6>
     <div style="padding-left: 60px;">
-        
-           
-        
+
+
+        <p id="countdown_1" style="position: relative; left:1150px; padding: 0%;"></p>
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" id="pg" aria-valuenow="60"
+                aria-valuemin="0" aria-valuemax="100" style="width:{% with progress_bar=page_obj.number total_pages=page_obj.num_pages %}
+                {{total_pages|mul:10 }}%">
+                {% endwith %}
+            </div>
+        </div>
         {% for result in results %}
-            <p id="countdown_1" style="position: relative; left:1150px; padding: 0%;"></p>
+
+
         <hr>
-            <form method="POST" id="myform">
-                {% csrf_token %} 
-                        {{result.id}} ) {{result.question}}
-                    </br>
-                    <input type="radio" id=Option1 value="{{result.option1}}" class="rb"
-                        name="name"> {{result.option1}}<br>
-                    <input type="radio" id=Option2 value="{{result.option2}}" class="rb"
-                        name="name"> {{result.option2}}<br>
-                    <input type="radio" id=Option3 value="{{result.option3}}" class="rb"
-                        name="name"> {{result.option3}} <br>               
-                    <input type="radio" id=Option4 value="{{result.option4}}" class="rb"
-                        name="name"> {{result.option4}}<br>
-                    <label id="correct_ans" class="rb" style="display: none; color: green;"><b>The Correct answer is:
-                    {{result.correct_ans}}</b></label>      
-        </hr>
-        <input type="hidden" name="question_id" value="{{result.id}}">
+        <form method="POST" id="myform">
+            {% csrf_token %}
+            {% if result.option1 %}
+            {{page_obj.number}} ) {{result.question}}
+            </br>
+            <input type="radio" id=Option1 value="{{result.option1}}" class="rb" name="name"> {{result.option1}}<br>
+            <input type="radio" id=Option2 value="{{result.option2}}" class="rb" name="name"> {{result.option2}}<br>
+            <input type="radio" id=Option3 value="{{result.option3}}" class="rb" name="name"> {{result.option3}} <br>
+            <input type="radio" id=Option4 value="{{result.option4}}" class="rb" name="name"> {{result.option4}}<br>
+            <label id="correct_ans" class="rb" style="display: none; color: green;"><b>The Correct answer is:
+                    {{result.correct_ans}}</b></label>
+            </hr>
+            {% else %}
+
+            {{page_obj.number}} ) {{result.question}}
+            </br>
+            <br>
+            <input type="text" id=Answer name="name"> <br>
+            </hr>
+
+        </form>
+
+        {% endif %}
+
         {% endfor %}
-       
-        <input type="text" name="answer" id="value"  />
-    </form>
+
+
+        </form>
+
         <br>
-       <b id="UserAnswers"></b>
-       {% if is_paginated %}
-
-            {% if page_obj.has_previous %}
-                <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        <b id="UserAnswers"></b>
+        {% if is_paginated %}
+        {% if page_obj.has_previous %}
+        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <a class="btn btn-outline-info mb-4"
+            href="?page={{ num }}">{{ num }}</a>
             {% endif %}
-
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
-                {% endif %}
             {% endfor %}
 
             {% if page_obj.has_next %}
-                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-                
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+
 
             {% else %}
-                <a class="btn btn-outline-info mb-4" href="{% url 'fill-in-page' %}" id="button1">Next</a>
-
-                {% endif %}
+            <a class="btn btn-outline-info mb-4" href="{% url 'result-page' %}" id="button1">Submit</a>
+            {% endif %}
 
             {% endif %}
-                </div>
-    
-       
+    </div>
+
+
     <script>
-        $(document).ready(function(){
-            $("#button1").click(function () {
-                $(".rb").get();
-                $(".rb").attr("disabled", true);
-            });
-        });
+
         function getAnswers() {
             document.getElementById("UserAnswers").innerHTML = "";
             var e = document.getElementsByTagName('Input');
             for (i = 0; i < e.length; i++) {
                 if (e[i].type == "radio") {
                     if (e[i].checked) {
-                        document.getElementById("UserAnswers").innerHTML += "Q" + e[i].name + ")." + 
-                        "The answer you have selected is:" + e[i].value + "</br>";
-                       
-                        
+                        if (`{{answer}}` == e[i].value) {
+                            print("hi")
+                        }
+
+
+
                     }
                 }
 
             }
         }
-        n = {{results.count}};
-        const starting_time = n*1;
+
+        n = {{ page_obj.num_pages }}
+
+        const starting_time = 1;
         let time = starting_time * 60;
         const countdownel = document.getElementById('countdown_1');
         function updatecountdown() {
@@ -283,24 +301,18 @@
         }
         setInterval(updatecountdown, 1000);
 
-        $(document).ready(function()
-    {
-        $('.rb').click(function(){
-            var txt="";
-            $('.rb:checked').each(function()
-            {
-                txt+=$(this).val
-            });
-            $('#answer').val(txt);
-        }
-        );
-    }
-    );
+
     </script>
-    <script src="{% static 'script.js' %}">
-                </script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

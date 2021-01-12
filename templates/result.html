@@ -14,7 +14,6 @@
           <b id="UserAnswers" style="color:green;" ></b>
         </div>
       </div>
-      <!-- FORM HERE -->
     </div>
     
     
@@ -24,10 +23,18 @@
         var i=0;
         document.getElementById("UserAnswers").innerHTML = `
           <p>  
-            {%for correct_ans in results %}
-                <br>The answer for the {{correct_ans.id}} question is {{correct_ans.Correct_ans}}
+          
+            {% for result in results %}
+              {% if result.correct_ans %}
+                <br>The answer for the {{result.question }} 
+                <br>{{result.correct_ans}}
+              {% else %}
+                
+                <br>The answer for the {{result.question }}
+                <br>{{result.blank_answer}}
+              {% endif %}
             {% endfor%}
-
+            
             </p>
 
         `;
