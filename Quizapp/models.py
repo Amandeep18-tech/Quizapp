@@ -19,7 +19,7 @@ class UserProgress(models.Model):
     class Meta:
         verbose_name_plural='UserProgress'    
     user=models.ForeignKey(User,on_delete=models.CASCADE)
-    questions=models.ManyToManyField(Exam)
+    
     current_page=models.IntegerField(default=1)
     user_answer=models.CharField(null=True,max_length=100)
     score_answer=models.IntegerField(default=0)
