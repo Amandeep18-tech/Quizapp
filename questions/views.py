@@ -15,11 +15,14 @@ class ExamListView(LoginRequiredMixin, ListView):
     def post(self, request):
 
         post_data = {
-            "user_answer_fill_in_the_blanks": request.POST.get('user_answer_fill_in_the_blanks')
+            "user_answer": request.POST.get('user_answer')
         }
         question_data = ""
-        question_data = post_data['user_answer_fill_in_the_blanks']
-        question_data.save()
+        question_data = post_data['user_answer']
+        user_progress = UserProgress.objects.filter(
+            user=self.request.user).first()
+        user_progress.user_answer = question_data
+        user_progress.save()
 
     def get_queryset(self, **kwargs):
         mcq = MCQ.objects.all()
