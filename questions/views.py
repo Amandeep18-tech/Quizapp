@@ -10,7 +10,8 @@ class ExamListView(LoginRequiredMixin, ListView):
     template_name = 'index.html'
     context_object_name = 'questions'
     paginate_by = 1
-
+    
+    
     def get_queryset(self, **kwargs):
         mcq = MCQ.objects.all()
         fill_in_the_blanks = FillTheBlanks.objects.all()
