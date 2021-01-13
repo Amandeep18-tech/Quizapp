@@ -15,7 +15,7 @@ media
 **/migrations/**
 !**/migrations
 !**/migrations/__init__.py
-static
+
 # Backup files # 
 *.bak 
 

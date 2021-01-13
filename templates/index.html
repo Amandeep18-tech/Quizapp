@@ -37,14 +37,15 @@
             <input type="radio" id=Option value="{{question.option2}}" class="rb" name="name"> {{question.option2}}<br>
             <input type="radio" id=Option value="{{question.option3}}" class="rb" name="name"> {{question.option3}} <br>
             <input type="radio" id=Option value="{{question.option4}}" class="rb" name="name"> {{question.option4}}<br>
-
+            
             </hr>
             {% else %}
             </br>
             <br>
-            <input type="text" id=Answer name="name" value="{{.user_answer}}" class="rb"> <br>
+            <input type="text" id=Answer name="name" value="{{question.user_answer}}" name="user_answer" class="rb"> <br>
             </hr>
         {% endif %}
+        <input type="submit" style="display: none;">
         </form>
         {% endfor %}
         <br>
@@ -73,7 +74,6 @@
 
             {% endif %}
     </div>
-    <script scr="{%  static 'script.js' %}"></script>
+    
     {%  endblock content %} 
     
- 

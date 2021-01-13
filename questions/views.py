@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from itertools import chain
 from .models import MCQ, FillTheBlanks, UserProgress
 
+
 class ExamListView(LoginRequiredMixin, ListView):
     """
         view to represent all the questions in the database
@@ -10,8 +11,16 @@ class ExamListView(LoginRequiredMixin, ListView):
     template_name = 'index.html'
     context_object_name = 'questions'
     paginate_by = 1
-    
-    
+
+    def post(self, request):
+
+        post_data = {
+            "user_answer_fill_in_the_blanks": request.POST.get('user_answer_fill_in_the_blanks')
+        }
+        question_data = ""
+        question_data = post_data['user_answer_fill_in_the_blanks']
+        question_data.save()
+
     def get_queryset(self, **kwargs):
         mcq = MCQ.objects.all()
         fill_in_the_blanks = FillTheBlanks.objects.all()
