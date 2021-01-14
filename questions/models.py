@@ -33,7 +33,8 @@ class UserProgress(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False,unique=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     current_page = models.IntegerField(default=1)
-    user_answer = models.CharField(default="Your answer",max_length=100)
+    user_answer = models.CharField(default="Your answer", max_length=300)
+    user_score=models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.user.username} Progress'

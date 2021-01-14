@@ -1,4 +1,4 @@
-from django.views.generic import ListView
+from django.views.generic import ListView,UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from itertools import chain
 from .models import MCQ, FillTheBlanks, UserProgress
@@ -6,22 +6,31 @@ from .models import MCQ, FillTheBlanks, UserProgress
 
 class ExamListView(LoginRequiredMixin, ListView):
     """
-        view to represent all the questions in the database
+
+    view to represent all the questions in the database
     """
     template_name = 'index.html'
     context_object_name = 'questions'
     paginate_by = 1
 
-    def post(self, request):
-
+    def post(self, request, *args, **kwargs):
+        """
+        Post the user answer
+        """
+        print("Hello")
         post_data = {
             "user_answer": request.POST.get('user_answer')
         }
-        question_data = ""
+        question_data = " "
         question_data = post_data['user_answer']
-        user_progress = UserProgress.objects.filter(
-            user=self.request.user).first()
+        user_progress = UserProgress.objects.get(
+            user=self.request.user)
+        print(question_data)
+        # mcq = MCQ.objects.all()
         user_progress.user_answer = question_data
+        # if user_progress.user_answer == mcq.correct_ans:
+        #     user_progress.user_score += 1
+        #     print("hello")
         user_progress.save()
 
     def get_queryset(self, **kwargs):
@@ -55,10 +64,6 @@ class ResultPageListView(LoginRequiredMixin, ListView):
         return questions
 
 
-class ScoreListView(ListView):
-    """
-    View to represent score page
-    """
-    model = UserProgress
-    template_name = 'index.html'
-    context_object_name = 'score'
+
+
+

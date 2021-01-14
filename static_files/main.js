@@ -1,20 +1,17 @@
-function getAnswers() {
-    document.getElementById("UserAnswers").innerHTML = "";
-    var e = document.getElementsByTagName('Input');
-    for (i = 0; i < e.length; i++) {
-        if (e[i].type == "radio") {
-            if (e[i].checked) {
-                if (`{{answer}}` == e[i].value) {
-                    print("hi")
-                }
-
-
-
-            }
-        }
-
-    }
-}
+function displayRadioValue() { 
+    document.getElementById("user_answer").innerHTML = "Hello"; 
+    var ele = document.getElementsByTagName('input'); 
+      
+    for(i = 0; i < ele.length; i++) { 
+          
+        if(ele[i].type="radio") { 
+          
+            if(ele[i].checked) 
+                document.getElementById("user_answer").innerHTML 
+                        += ele[i].value+"<br>"; 
+        } 
+    } 
+} 
 const starting_time = 1;
 let time = starting_time * 60;
 const countdownel = document.getElementById('countdown_1');
