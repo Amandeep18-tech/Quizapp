@@ -1,27 +1,31 @@
-
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-      <div class="media">
-        <div class="media-body">
-          <h2 class="account-heading">{{ user.username }}</h2>
-          <p class="text-secondary">Your score {{savedata.score}} out of {{lenlst}}</p>
-          <p class="text-secondary">{{ user.email }}</p>
-          <input type="submit" value="Click to get Answers" id="button1" onclick="getanswers();" />
-          
-          <br>
-          <b id="UserAnswers" style="color:green;" ></b>
-        </div>
-      </div>
+<div class="content-section">
+  <div class="media">
+    <div class="media-body">
+      <h2 class="account-heading">{{ user.username }}</h2>
+      <p class="text-secondary">Your score {{ user_score }} 
+        
+         out of {{total_questions}}</p>
+         
+         
+
+      <p class="text-secondary">{{ user.email }}</p>
+      <input type="submit" value="Click to get Answers" id="button1" onclick="getanswers();" />
+
+      <br>
+      <b id="UserAnswers" style="color:green;"></b>
     </div>
-    
-    
-     <script>
-      function getanswers() {
-        document.getElementById("UserAnswers").innerHTML = "";  
-        var i=0;
-        document.getElementById("UserAnswers").innerHTML = `
+  </div>
+</div>
+
+
+<script>
+  function getanswers() {
+    document.getElementById("UserAnswers").innerHTML = "";
+    var i = 0;
+    document.getElementById("UserAnswers").innerHTML = `
           <p>  
           
             {% for question in questions %}
@@ -38,8 +42,8 @@
             </p>
 
         `;
-            
-        
-      }
-    </script>
+
+
+  }
+</script>
 {% endblock content %}

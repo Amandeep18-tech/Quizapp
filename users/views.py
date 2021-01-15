@@ -40,3 +40,12 @@ class LoginView(views.LoginView):
         saved_page = reverse('question-page')
         return_saved_page = f'{saved_page}?page={user_progress.current_page}'
         return return_saved_page
+
+    def get_queryset(self, **kwargs):
+       
+    
+        user_progress = UserProgress.objects.filter(
+            user=self.request.user).first()
+        user_progress.user_score=0
+        user_progress.save()
+        return user_progress
