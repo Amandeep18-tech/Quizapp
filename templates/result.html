@@ -29,14 +29,10 @@
           <p>  
           
             {% for question in questions %}
-              {% if question.correct_ans %}
-                <br>The answer for the {{question.question }} 
-                <br>{{question.correct_ans}}
-              {% else %}
-                
-                <br>The answer for the {{question.question }}
-                <br>{{question.blank_answer}}
-              {% endif %}
+              
+                <br>The answer for the {{question.questions }} 
+                <br>{{question.correct_answer}}
+             
             {% endfor%}
             
             </p>

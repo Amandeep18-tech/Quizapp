@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import MCQ, FillTheBlanks, UserProgress
+from .models import UserProgress, MCQ, FillInTheBlanks, Questions
 from users.models import Profile
 admin.site.register(MCQ)
 admin.site.register(Profile)
-admin.site.register(FillTheBlanks)
+admin.site.register(FillInTheBlanks)
 admin.site.register(UserProgress)
+admin.site.register(Questions)

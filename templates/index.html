@@ -30,20 +30,23 @@
         <hr>
         <form method="POST" id="myform" action="{% url 'question-page' %}">
             {% csrf_token %}
-            {{page_obj.number}} ) {{question.question}}
-            {% if question.option1 %}
+            {{page_obj.number}} ) {{question.questions}}
+            {% if question.is_mcq is True %}
             </br>
-            <input type="radio" id=Option value="{{question.option1}}" class="rb" name="user_answer"> {{question.option1}}<br>
-            <input type="radio" id=Option value="{{question.option2}}" class="rb" name="user_answer"> {{question.option2}}<br>
-            <input type="radio" id=Option value="{{question.option3}}" class="rb" name="user_answer"> {{question.option3}} <br>
-            <input type="radio" id=Option value="{{question.option4}}" class="rb" name="user_answer"> {{question.option4}}<br>
+            {% for mcq in mcqs %}
+            {% if mcq.questions.id == question.id %}
+            <input type="radio" id=Option value="{{mcq.option1}}" class="rb" name="user_answer"> {{mcq.option1}}<br>
+            <input type="radio" id=Option value="{{mcq.option2}}" class="rb" name="user_answer"> {{mcq.option2}}<br>
+            <input type="radio" id=Option value="{{mcq.option3}}" class="rb" name="user_answer"> {{mcq.option3}} <br>
+            <input type="radio" id=Option value="{{mcq.option4}}" class="rb" name="user_answer"> {{mcq.option4}}<br>
             <br> 
+            {% endif %}
+            {% endfor %}
+            <br>
+            {% elif question.is_fill_in_the_blanks is True %}
             
             <br>
-            {% else %}
-            </br>
-            <br>
-            <input type="text" id=user_answer   name="user_answer" > <br>
+            <input type="text" id=user_answer   name="user_answer"  class="rb"> <br>
             </hr>
             <div>
         {% endif %}
@@ -51,7 +54,7 @@
     
             {% if page_obj.has_next %}
                
-                    <input class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}"  form="myform" type="submit" value="next" >
+                <input class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}"  form="myform" type="submit" value="next" >
                 
             {% else %}
             

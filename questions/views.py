@@ -1,9 +1,8 @@
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from itertools import chain
-from django.core.paginator import Paginator
-from django.shortcuts import HttpResponseRedirect, reverse, render
-from .models import MCQ, FillTheBlanks, UserProgress
+
+from django.shortcuts import HttpResponseRedirect, reverse
+from .models import  UserProgress,MCQ,FillInTheBlanks,Questions
 
 
 class ExamListView(LoginRequiredMixin, ListView):
@@ -28,19 +27,13 @@ class ExamListView(LoginRequiredMixin, ListView):
         user_progress = UserProgress.objects.get(
             user=self.request.user)
         if question_data is not None:
-            mcq = MCQ.objects.all()
-            fill_in_the_blanks = FillTheBlanks.objects.all()
+            questions=Questions.objects.all()
             user_progress.user_answer = question_data
-            for fill_in_the_blank in fill_in_the_blanks:
-                if user_progress.user_answer == fill_in_the_blank.blank_answer:
-                    user_progress.user_score += 1
-            for mcq in mcq:
-                if user_progress.user_answer == mcq.correct_ans:
+            for question in questions:
+                if user_progress.user_answer == question.correct_answer:
                     user_progress.user_score += 1
         user_progress.save()
-        mcq_count = MCQ.objects.all().count()
-        fill_in_the_blanks_count = FillTheBlanks.objects.all().count()
-        total_count = mcq_count+fill_in_the_blanks_count
+        total_count=Questions.objects.all().count()
         if total_count == user_progress.current_page:
             return HttpResponseRedirect(reverse('result-page'))
             
@@ -50,15 +43,24 @@ class ExamListView(LoginRequiredMixin, ListView):
             return HttpResponseRedirect(return_next_page)
 
     def get_queryset(self, **kwargs):
-        mcq = MCQ.objects.all()
-        fill_in_the_blanks = FillTheBlanks.objects.all()
-        questions = list(chain(mcq, fill_in_the_blanks))
+        questions =Questions.objects.all()
         actual_page = self.request.GET.get('page', 1)
         user_progress = UserProgress.objects.filter(
             user=self.request.user).first()
+        if actual_page==1:
+            user_progress.user_score=0
         user_progress.current_page = actual_page
         user_progress.save()
         return questions
+
+    
+    def get_context_data(self, **kwargs):
+        context = super(ExamListView, self).get_context_data(**kwargs)
+        # questions=Questions.objects.get()
+        context['mcqs']=MCQ.objects.all()
+        return context
+        
+
 
 
 class ResultPageListView(LoginRequiredMixin, ListView):
@@ -69,11 +71,9 @@ class ResultPageListView(LoginRequiredMixin, ListView):
     context_object_name = 'questions'
 
     def get_queryset(self, **kwargs):
-        mcq = MCQ.objects.all()
-        fill_in_the_blanks = FillTheBlanks.objects.all()
         user_progress = UserProgress.objects.filter(
             user=self.request.user).first()
-        questions = list(chain(mcq, fill_in_the_blanks))
+        questions = Questions.objects.all()
         actual_page = 1
         user_progress = UserProgress.objects.filter(
             user=self.request.user).first()
@@ -87,9 +87,7 @@ class ResultPageListView(LoginRequiredMixin, ListView):
         user_progress= UserProgress.objects.get(
             user=self.request.user)
         user_score=user_progress.user_score
-        mcq_count = MCQ.objects.all().count()
-        fill_in_the_blanks_count = FillTheBlanks.objects.all().count()
-        total_questions = mcq_count+fill_in_the_blanks_count
+        total_questions =Questions.objects.all().count()
         context['user_score'] = user_score
         context['total_questions']=total_questions
         return context
