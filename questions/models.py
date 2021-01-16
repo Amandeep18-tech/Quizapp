@@ -4,18 +4,25 @@ import uuid
 
 
 class Questions(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True,null=False)
+    """
+    Model for storing Questions
+    """
+    id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, unique=True, null=False)
     is_mcq = models.BooleanField(default=False)
     is_fill_in_the_blanks = models.BooleanField(default=False)
-    questions = models.CharField(default="Exam Questions", max_length=100)
+    question_text = models.CharField(default="Exam Questions", max_length=100)
     correct_answer = models.CharField(default="Correct Answer", max_length=100)
 
     def __str__(self):
-        return f'{self.questions}'
+        return f'{self.question}'
 
 
 class MCQ(models.Model):
-    questions = models.OneToOneField(
+    """
+    Model for MCQ Questions
+    """
+    question = models.OneToOneField(
         Questions, on_delete=models.PROTECT)
     option1 = models.CharField(max_length=100)
     option2 = models.CharField(max_length=100)
@@ -27,22 +34,27 @@ class MCQ(models.Model):
 
 
 class FillInTheBlanks(models.Model):
-    questions = models.OneToOneField(
+    """
+    Model for Fill in the blanks type questions
+    """
+    question = models.OneToOneField(
         Questions, on_delete=models.PROTECT)
-    blank_answer = models.CharField(max_length=100)
 
     def __str__(self):
         return f'{self.questions}'
 
 
 class UserProgress(models.Model):
+    """
+    Model for saving User data in each question
+    """
+
     class Meta:
         verbose_name_plural = 'UserProgress'
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     current_page = models.IntegerField(default=1)
-    user_answer = models.CharField(default="Your answer", max_length=300)
     user_score = models.IntegerField(default=0)
 
     def __str__(self):

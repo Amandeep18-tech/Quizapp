@@ -21,7 +21,7 @@ from users import views as user_views
 
 urlpatterns = [
     path('register/', user_views.SignUpView.as_view(), name='register'),
-    path('login/', user_views.LoginView.as_view(template_name='login.html'),
+    path('login/', user_views.CustomLoginView.as_view(),
          name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('password-reset/',

@@ -5,11 +5,11 @@
   <div class="media">
     <div class="media-body">
       <h2 class="account-heading">{{ user.username }}</h2>
-      <p class="text-secondary">Your score {{ user_score }} 
-        
-         out of {{total_questions}}</p>
-         
-         
+      <p class="text-secondary">Your score {{ user_score }}
+
+        out of {{total_questions}}</p>
+
+
 
       <p class="text-secondary">{{ user.email }}</p>
       <input type="submit" value="Click to get Answers" id="button1" onclick="getanswers();" />
@@ -30,8 +30,8 @@
           
             {% for question in questions %}
               
-                <br>The answer for the {{question.questions }} 
-                <br>{{question.correct_answer}}
+                <br>{{question.questions }} 
+                <br>Answer:{{question.correct_answer}}
              
             {% endfor%}
             
