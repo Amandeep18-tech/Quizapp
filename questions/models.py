@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 import uuid
 
 
-class Questions(models.Model):
+class Question(models.Model):
     """
     Model for storing Questions
     """
@@ -15,7 +15,7 @@ class Questions(models.Model):
     correct_answer = models.CharField(default="Correct Answer", max_length=100)
 
     def __str__(self):
-        return f'{self.question}'
+        return f'{self.question_text}'
 
 
 class MCQ(models.Model):
@@ -23,25 +23,25 @@ class MCQ(models.Model):
     Model for MCQ Questions
     """
     question = models.OneToOneField(
-        Questions, on_delete=models.PROTECT)
+        Question, on_delete=models.PROTECT)
     option1 = models.CharField(max_length=100)
     option2 = models.CharField(max_length=100)
     option3 = models.CharField(max_length=100)
     option4 = models.CharField(max_length=100)
 
     def __str__(self):
-        return f'{self.questions}'
+        return f'{self.question}'
 
 
-class FillInTheBlanks(models.Model):
+class FillInTheBlank(models.Model):
     """
     Model for Fill in the blanks type questions
     """
     question = models.OneToOneField(
-        Questions, on_delete=models.PROTECT)
+        Question, on_delete=models.PROTECT)
 
     def __str__(self):
-        return f'{self.questions}'
+        return f'{self.question}'
 
 
 class UserProgress(models.Model):

@@ -2,7 +2,8 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.shortcuts import HttpResponseRedirect, reverse
-from .models import UserProgress, MCQ, FillInTheBlanks, Questions
+from .models import UserProgress, MCQ, FillInTheBlank, Question
+from django.views.decorators.cache import cache_control
 
 
 class ExamListView(LoginRequiredMixin, ListView):
@@ -27,13 +28,13 @@ class ExamListView(LoginRequiredMixin, ListView):
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
         if question_data is not None:
-            questions = Questions.objects.all()
+            questions = Question.objects.all()
 
             for question in questions:
                 if question_data == question.correct_answer:
                     user_progress.user_score += 1
         user_progress.save()
-        total_count = Questions.objects.all().count()
+        total_count = Question.objects.all().count()
         if total_count == user_progress.current_page:
             return HttpResponseRedirect(reverse('result-page'))
 
@@ -43,7 +44,7 @@ class ExamListView(LoginRequiredMixin, ListView):
             return HttpResponseRedirect(return_next_page)
 
     def get_queryset(self, **kwargs):
-        questions = Questions.objects.all().order_by('question_text')
+        questions = Question.objects.all().order_by('question_text')
         actual_page = self.request.GET.get('page', 1)
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
@@ -53,6 +54,7 @@ class ExamListView(LoginRequiredMixin, ListView):
         user_progress.save()
         return questions
 
+    @cache_control(no_cache=True, must_revalidate=True, no_store=True)
     def get_context_data(self, **kwargs):
         context = super(ExamListView, self).get_context_data(**kwargs)
         # questions=Questions.objects.get()
@@ -68,7 +70,7 @@ class ResultPageListView(LoginRequiredMixin, ListView):
     context_object_name = 'questions'
 
     def get_queryset(self, **kwargs):
-        questions = Questions.objects.all()
+        questions = Question.objects.all()
         actual_page = 1
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
@@ -81,7 +83,7 @@ class ResultPageListView(LoginRequiredMixin, ListView):
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
         user_score = user_progress.user_score
-        total_questions = Questions.objects.all().count()
+        total_questions = Question.objects.all().count()
         context['user_score'] = user_score
         context['total_questions'] = total_questions
         return context
