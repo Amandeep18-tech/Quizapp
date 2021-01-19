@@ -44,6 +44,16 @@ class FillInTheBlank(models.Model):
         return f'{self.question}'
 
 
+class AnswerGiven(models.Model):
+    id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    answer = models.CharField(default="Your answer", max_length=200)
+
+    def __str__(self):
+        return f'{self.answer}'
+
+
 class UserProgress(models.Model):
     """
     Model for saving User data in each question
@@ -51,11 +61,13 @@ class UserProgress(models.Model):
 
     class Meta:
         verbose_name_plural = 'UserProgress'
+
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     current_page = models.IntegerField(default=1)
     user_score = models.IntegerField(default=0)
-
+    user_answer = models.ManyToManyField(AnswerGiven)
+    
     def __str__(self):
         return f'{self.user.username} Progress'

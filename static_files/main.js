@@ -20,7 +20,3 @@ function updatecountdown() {
 }
 setInterval(updatecountdown, 1000);
 
-window.history.forward(); 
-function noBack() { 
-    window.history.forward(); 
-} 

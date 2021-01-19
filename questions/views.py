@@ -1,11 +1,15 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.shortcuts import HttpResponseRedirect, reverse
-from .models import UserProgress, MCQ, FillInTheBlank, Question
+from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_control
+from django.shortcuts import HttpResponseRedirect, reverse, HttpResponse, render
+from django.core.paginator import Paginator
+from .models import UserProgress, MCQ, Question, AnswerGiven
+from .decorators import does_user_has_permission
 
 
+@method_decorator(does_user_has_permission(message='No access'), name='dispatch')
 class ExamListView(LoginRequiredMixin, ListView):
     """
 
@@ -27,6 +31,12 @@ class ExamListView(LoginRequiredMixin, ListView):
         question_data = self.request.POST.get('user_answer', None)
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
+        answer_given = AnswerGiven.objects.create(
+            user=self.request.user, answer=question_data)
+
+        answer_given.save()
+        user_progress.user_answer.add(answer_given)
+
         if question_data is not None:
             questions = Question.objects.all()
 
@@ -35,6 +45,7 @@ class ExamListView(LoginRequiredMixin, ListView):
                     user_progress.user_score += 1
         user_progress.save()
         total_count = Question.objects.all().count()
+
         if total_count == user_progress.current_page:
             return HttpResponseRedirect(reverse('result-page'))
 
@@ -50,15 +61,21 @@ class ExamListView(LoginRequiredMixin, ListView):
                                           user=self.request.user)
         if actual_page == 1:
             user_progress.user_score = 0
+
         user_progress.current_page = actual_page
         user_progress.save()
         return questions
 
-    @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+    # @ cache_control(no_cache=True, must_revalidate=False, no_store=True)
     def get_context_data(self, **kwargs):
         context = super(ExamListView, self).get_context_data(**kwargs)
         # questions=Questions.objects.get()
         context['mcqs'] = MCQ.objects.all()
+        actual_page = self.request.GET.get('page', 1)
+        user_progress = get_object_or_404(UserProgress,
+                                          user=self.request.user)
+        if int(actual_page) < user_progress.current_page:
+            return HttpResponseRedirect(reverse('previous-page'))
         return context
 
 
@@ -75,6 +92,7 @@ class ResultPageListView(LoginRequiredMixin, ListView):
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
         user_progress.current_page = actual_page
+
         user_progress.save()
         return questions
 
@@ -84,6 +102,8 @@ class ResultPageListView(LoginRequiredMixin, ListView):
                                           user=self.request.user)
         user_score = user_progress.user_score
         total_questions = Question.objects.all().count()
+        user_answers = user_progress.user_answers
         context['user_score'] = user_score
         context['total_questions'] = total_questions
+        context['user_answers'] = user_answers
         return context
