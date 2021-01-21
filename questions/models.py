@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+from countdowntimer_model.models import CountdownTimer
+from datetime import datetime
 
 
 class Question(models.Model):
@@ -12,7 +14,7 @@ class Question(models.Model):
     is_mcq = models.BooleanField(default=False)
     is_fill_in_the_blanks = models.BooleanField(default=False)
     question_text = models.CharField(default="Exam Questions", max_length=100)
-    correct_answer = models.CharField(default="Correct Answer", max_length=100)
+    user = models.ManyToManyField(User, through="AnswerGiven")
 
     def __str__(self):
         return f'{self.question_text}'
@@ -28,6 +30,13 @@ class MCQ(models.Model):
     option2 = models.CharField(max_length=100)
     option3 = models.CharField(max_length=100)
     option4 = models.CharField(max_length=100)
+    choices_mcq = (
+        (1, (1)),
+        (2, (2)),
+        (3, (3)),
+        (4, (4)),
+    )
+    correct_answer_mcq = models.IntegerField(default=0, choices=choices_mcq)
 
     def __str__(self):
         return f'{self.question}'
@@ -39,6 +48,8 @@ class FillInTheBlank(models.Model):
     """
     question = models.OneToOneField(
         Question, on_delete=models.PROTECT)
+    correct_answer_fill_in_the_blanks = models.CharField(
+        default="Correct Answer", max_length=100)
 
     def __str__(self):
         return f'{self.question}'
@@ -48,7 +59,12 @@ class AnswerGiven(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
-    answer = models.CharField(default="Your answer", max_length=200)
+    question = models.ForeignKey(
+        Question, on_delete=models.PROTECT)
+    user_answer_fill_in_the_blanks = models.CharField(
+        default="Your answer", max_length=200)
+    user_answer_mcq = models.IntegerField(default=0)
+    is_answer_correct = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.answer}'
@@ -67,7 +83,14 @@ class UserProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     current_page = models.IntegerField(default=1)
     user_score = models.IntegerField(default=0)
-    user_answer = models.ManyToManyField(AnswerGiven)
-    
+    user_time_left = models.DateTimeField(default=datetime.now(), blank=True)
+
     def __str__(self):
         return f'{self.user.username} Progress'
+
+
+class UserCountdownTimer(CountdownTimer):
+    id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    duration_in_minutes = models.IntegerField(default=0)
+    state = models.PositiveSmallIntegerField(default=0)

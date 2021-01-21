@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'Quizapp',
     'crispy_forms',
     'users.apps.UsersConfig',
+    "countdowntimer_model",
     'mathfilters',
     'questions.apps.QuestionsConfig',
 ]

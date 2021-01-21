@@ -3,9 +3,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_control
-from django.shortcuts import HttpResponseRedirect, reverse, HttpResponse, render
-from django.core.paginator import Paginator
-from .models import UserProgress, MCQ, Question, AnswerGiven
+from django.shortcuts import HttpResponseRedirect, reverse, render
+from .models import UserProgress, MCQ, Question, AnswerGiven, UserCountdownTimer
 from .decorators import does_user_has_permission
 
 
@@ -64,13 +63,22 @@ class ExamListView(LoginRequiredMixin, ListView):
 
         user_progress.current_page = actual_page
         user_progress.save()
+
         return questions
 
     # @ cache_control(no_cache=True, must_revalidate=False, no_store=True)
     def get_context_data(self, **kwargs):
         context = super(ExamListView, self).get_context_data(**kwargs)
         # questions=Questions.objects.get()
+        doomsday_timer = UserCountdownTimer.objects.create(
+            duration_in_minutes=5,
+            state=UserCountdownTimer.STATE.RUNNING,
+        )
+        doomsday_timer = UserCountdownTimer.objects.first()
+        remaining_minutes = doomsday_timer.remaining_time_in_minutes()
+        print(remaining_minutes)
         context['mcqs'] = MCQ.objects.all()
+        context['remaining_minutes'] = doomsday_timer.remaining_time()
         actual_page = self.request.GET.get('page', 1)
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)

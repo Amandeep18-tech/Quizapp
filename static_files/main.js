@@ -14,7 +14,8 @@ function updatecountdown() {
         return;
     }
     seconds = seconds < 10 ? '0' + seconds : seconds;
-    countdownel.innerHTML = `${minutes}: ${seconds}`;
+   
+    countdownel.innerHTML = `{{remaining_minutes}}`;
     time--;
 
 }
