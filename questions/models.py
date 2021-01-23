@@ -67,7 +67,7 @@ class AnswerGiven(models.Model):
     is_answer_correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.answer}'
+        return f'{self.question}'
 
 
 class UserProgress(models.Model):

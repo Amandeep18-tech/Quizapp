@@ -2,7 +2,7 @@
 const starting_time = 1;
 let time = starting_time * 60;
 const countdownel = document.getElementById('countdown_1');
-function updatecountdown() {
+function updatecountdown(remaining_minutes) {
     const minutes = Math.floor(time / 60);
     let seconds = time % 60;
     if (minutes < 0) {
@@ -15,7 +15,7 @@ function updatecountdown() {
     }
     seconds = seconds < 10 ? '0' + seconds : seconds;
    
-    countdownel.innerHTML = `{{remaining_minutes}}`;
+    countdownel.innerHTML =remaining_minutes;
     time--;
 
 }

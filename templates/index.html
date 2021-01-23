@@ -31,14 +31,15 @@
 <form method="POST" id="myform">
     {% csrf_token %}
     {{page_obj.number}} ) {{question.question_text}}
+    <input type="hidden" id="question_id" name="question_id" value="{{question.id}}">
     {% if question.is_mcq is True %}
     </br>
     {% for mcq in mcqs %}
     {% if mcq.question.id == question.id %}
-    <input type="radio" id=Option value="{{mcq.option1}}" class="rb" name="user_answer"> {{mcq.option1}}<br>
-    <input type="radio" id=Option value="{{mcq.option2}}" class="rb" name="user_answer"> {{mcq.option2}}<br>
-    <input type="radio" id=Option value="{{mcq.option3}}" class="rb" name="user_answer"> {{mcq.option3}} <br>
-    <input type="radio" id=Option value="{{mcq.option4}}" class="rb" name="user_answer"> {{mcq.option4}}<br>
+    <input type="radio" id=Option value="1" class="rb" name="user_answer"> {{mcq.option1}}<br>
+    <input type="radio" id=Option value="2" class="rb" name="user_answer"> {{mcq.option2}}<br>
+    <input type="radio" id=Option value="3" class="rb" name="user_answer"> {{mcq.option3}} <br>
+    <input type="radio" id=Option value="4" class="rb" name="user_answer"> {{mcq.option4}}<br>
     <br>
     {% endif %}
     {% endfor %}
@@ -74,4 +75,11 @@
 
 </div>
 <script src="{% static 'main.js' %}"></script>
+<script>
+    updatecountdown({
+        {
+            remaining_minutes
+        }
+    })
+</script>
 {%  endblock content %}
