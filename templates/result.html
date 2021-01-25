@@ -30,20 +30,37 @@
           
             {% for answer_given in answer_given %}
               {% if answer_given.user_answer_mcq %}
+              <br>
                 {% for mcq in mcq %}
-                  {% if answer_given.question.id == mcq.question.id and mcq.correct_answer_mcq == answer_given.user_answer_mcq %}
-                    <br>{{answer_given.question }} 
-                    <br>Correct Answer
-                    <br>Answer:Option {{answer_given.user_answer_mcq}}
-                  {% else %}
-                    Incorrect Answer
-                    <br>You choose Option {{answer_given.user_answer_mcq}}
-                    <br>Correct Answer is {{mcq.correct_answer_mcq}}
+                  {% if answer_given.question.id == mcq.question.id %}
+                    {% if answer_given.is_answer_correct == True %}
+                      <br>{{answer_given.question }} 
+                      <br>Correct Answer
+                      <br>Answer:Option {{answer_given.user_answer_mcq}}
+                    {% else %}
+                      <br>{{answer_given.question }} 
+                      Incorrect Answer
+                      <br>You choose Option {{answer_given.user_answer_mcq}}
+                      <br>Correct Answer is {{mcq.correct_answer_mcq}}
+                    {% endif %}
                   {% endif %}
                 {% endfor %}
               {% elif answer_given.user_answer_fill_in_the_blanks %}
-                <br>{{answer_given.question }} 
-                  <br>Answer:{{answer_given.user_answer_fill_in_the_blanks }}
+              <br>
+                {% for fill_in_the_blank in fill_in_the_blanks %}
+                  {% if answer_given.question.id == fill_in_the_blank.question.id %}
+                    {% if answer_given.is_answer_correct == True %}
+                      <br>{{answer_given.question }} 
+                      <br>Correct Answer
+                      <br>Answer:{{answer_given.user_answer_fill_in_the_blanks }}
+                    {% else %}
+                      <br>{{answer_given.question }} 
+                      Incorrect Answer
+                      <br>Your answer {{answer_given.user_answer_fill_in_the_blanks }}
+                      <br>Correct Answer is {{fill_in_the_blank.correct_answer_fill_in_the_blanks}}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
               {% endif %}
             {% endfor%}
             

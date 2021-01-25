@@ -1,8 +1,7 @@
-
-const starting_time = 1;
+const starting_time = 10;
 let time = starting_time * 60;
 const countdownel = document.getElementById('countdown_1');
-function updatecountdown(remaining_minutes) {
+function updatecountdown() {
     const minutes = Math.floor(time / 60);
     let seconds = time % 60;
     if (minutes < 0) {
@@ -14,10 +13,13 @@ function updatecountdown(remaining_minutes) {
         return;
     }
     seconds = seconds < 10 ? '0' + seconds : seconds;
-   
-    countdownel.innerHTML =remaining_minutes;
+    countdownel.innerHTML = `${minutes}: ${seconds}`;
+
+    
     time--;
 
 }
-setInterval(updatecountdown, 1000);
-
+window.onbeforeunload = function() {
+    
+    localStorage.setItem(countdown_1), $('#countdown1').val());
+ }

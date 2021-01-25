@@ -1,10 +1,9 @@
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
-from django.core.paginator import Paginator
-from django.shortcuts import HttpResponseRedirect, reverse, render
-from .models import UserProgress, MCQ, Question, AnswerGiven, UserCountdownTimer, FillInTheBlank
+from django.shortcuts import HttpResponseRedirect, reverse
+from .models import UserProgress, MCQ, Question, AnswerGiven, FillInTheBlank
 from .decorators import does_user_has_permission
 
 
@@ -36,22 +35,20 @@ class ExamListView(LoginRequiredMixin, ListView):
 
         question = get_object_or_404(Question, id=question_id)
         if question_data is not None:
-
             mcq = MCQ.objects.all()
             fill_in_the_blank = FillInTheBlank.objects.all()
             if question.is_mcq is True:
                 for mcq in mcq:
+                    print(question_data)
+
                     if question.id == mcq.question.id:
                         answer_given = AnswerGiven(
                             user=self.request.user, question=question,
                             user_answer_mcq=question_data)
-                        print(mcq.correct_answer_mcq)
-                        print(question_data)
-                        print(answer_given.user_answer_mcq)
-                        if question_data == answer_given.user_answer_mcq:
-                            print("Hi")
+                        if int(answer_given.user_answer_mcq) == mcq.correct_answer_mcq:
                             answer_given.is_answer_correct = True
                             user_progress.user_score += 1
+
                         answer_given.save()
 
             elif question.is_fill_in_the_blanks is True:
@@ -64,14 +61,19 @@ class ExamListView(LoginRequiredMixin, ListView):
                         if fill_in_the_blank.correct_answer_fill_in_the_blanks == question_data:
                             answer_given.is_answer_correct = True
                             user_progress.user_score += 1
+                        else:
+                            answer_given.is_answer_correct = False
                         answer_given.save()
-        user_progress.save()
         total_count = Question.objects.all().count()
 
         if total_count == user_progress.current_page:
+            user_progress.is_finished = True
+            user_progress.save()
             return HttpResponseRedirect(reverse('result-page'))
 
         else:
+            user_progress.is_finished = False
+            user_progress.save()
             question_page = reverse('question-page')
             return_next_page = f'{question_page}?page={user_progress.current_page+1}'
             return HttpResponseRedirect(return_next_page)
@@ -82,7 +84,8 @@ class ExamListView(LoginRequiredMixin, ListView):
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
 
-        if actual_page == 1:
+        if int(actual_page) == 1:
+            user_progress.is_finished = False
             user_progress.user_score = 0
             AnswerGiven.objects.filter(user=self.request.user).delete()
 
@@ -93,20 +96,13 @@ class ExamListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ExamListView, self).get_context_data(**kwargs)
-        doomsday_timer = UserCountdownTimer.objects.update_or_create(
-            duration_in_minutes=6,
-            state=UserCountdownTimer.STATE.RUNNING,
-        )
-        doomsday_timer = UserCountdownTimer.objects.first()
-        remaining_minutes = doomsday_timer.remaining_time_in_minutes()
 
         context['mcqs'] = MCQ.objects.all()
-        context['remaining_minutes'] = doomsday_timer.remaining_time()
+
         actual_page = self.request.GET.get('page', 1)
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
-        if int(actual_page) < user_progress.current_page:
-            return HttpResponseRedirect(reverse('previous-page'))
+
         return context
 
 
@@ -124,7 +120,7 @@ class ResultPageListView(LoginRequiredMixin, ListView):
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
         user_progress.current_page = actual_page
-
+        user_progress.is_finished = True
         user_progress.save()
         return answer_given
 

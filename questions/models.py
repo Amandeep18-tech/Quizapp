@@ -83,14 +83,11 @@ class UserProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     current_page = models.IntegerField(default=1)
     user_score = models.IntegerField(default=0)
-    user_time_left = models.DateTimeField(default=datetime.now(), blank=True)
+    user_time_login = models.DateTimeField(default=datetime.now(), blank=True)
+    is_finished = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.username} Progress'
 
 
-class UserCountdownTimer(CountdownTimer):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-    duration_in_minutes = models.IntegerField(default=0)
-    state = models.PositiveSmallIntegerField(default=0)
+
