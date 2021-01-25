@@ -90,7 +90,7 @@ class ExamListView(LoginRequiredMixin, ListView):
             total_minutes = Question.objects.all().count()
             user_progress.user_time = datetime.now()
             user_progress.user_end_time = user_progress.user_time + \
-                timedelta(minutes=1)
+                timedelta(minutes=total_minutes)
             user_progress.is_started = True
             user_progress.is_finished = False
             user_progress.user_score = 0
