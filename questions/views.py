@@ -67,8 +67,8 @@ class ExamListView(LoginRequiredMixin, ListView):
                         answer_given.save()
         total_count = Question.objects.all().count()
 
-        if total_count == user_progress.current_page or user_progress.user_end_time < datetime.now(user_progress.user_end_time.tzinfo):
-            print("here")
+        if total_count == user_progress.current_page:
+
             user_progress.is_finished = True
             user_progress.save()
             return HttpResponseRedirect(reverse('result-page'))
