@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import HttpResponseRedirect, reverse
 from .models import UserProgress, MCQ, Question, AnswerGiven, FillInTheBlank
 from .decorators import does_user_has_permission
+from datetime import datetime, timedelta
 
 
 @method_decorator(does_user_has_permission(message='No access'), name='dispatch')
@@ -66,7 +67,8 @@ class ExamListView(LoginRequiredMixin, ListView):
                         answer_given.save()
         total_count = Question.objects.all().count()
 
-        if total_count == user_progress.current_page:
+        if total_count == user_progress.current_page or user_progress.user_end_time < datetime.now(user_progress.user_end_time.tzinfo):
+            print("here")
             user_progress.is_finished = True
             user_progress.save()
             return HttpResponseRedirect(reverse('result-page'))
@@ -84,7 +86,12 @@ class ExamListView(LoginRequiredMixin, ListView):
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
 
-        if int(actual_page) == 1:
+        if int(actual_page) == 1 and user_progress.is_started is False:
+            total_minutes = Question.objects.all().count()
+            user_progress.user_time = datetime.now()
+            user_progress.user_end_time = user_progress.user_time + \
+                timedelta(minutes=1)
+            user_progress.is_started = True
             user_progress.is_finished = False
             user_progress.user_score = 0
             AnswerGiven.objects.filter(user=self.request.user).delete()
@@ -96,13 +103,11 @@ class ExamListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ExamListView, self).get_context_data(**kwargs)
-
-        context['mcqs'] = MCQ.objects.all()
-
-        actual_page = self.request.GET.get('page', 1)
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
-
+        context['mcqs'] = MCQ.objects.all()
+        context['end_time'] = user_progress.user_end_time
+        context['start_time'] = user_progress.user_time
         return context
 
 

@@ -7,8 +7,8 @@
 <center>
 
     <h1>Welcome to the quiz app {{user.username}}</h1>
-    
-    
+
+
     <hr>
     </hr>
 </center>
@@ -16,6 +16,8 @@
 </h6>
 
 <div style="padding-left: 10px; padding-right: 10px;"></div>
+<div id="start-time" style="display: none;">{{start_time|date:'Y-m-d H:i'}}</div>
+<div id="end-time" style="display: none;">{{end_time|date:'Y-m-d H:i'}} </div>
 
 <p id="countdown_1" style="position: relative; left:1150px; padding: 0%;"></p>
 <br>
@@ -76,6 +78,8 @@
 
 </div>
 <script src="{% static 'main.js' %}"></script>
-
+<script>
+    setInterval("{% url 'result-page' %}")
+</script>
 
 {%  endblock content %}

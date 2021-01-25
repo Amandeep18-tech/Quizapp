@@ -1,25 +1,25 @@
-const starting_time = 10;
-let time = starting_time * 60;
-const countdownel = document.getElementById('countdown_1');
-function updatecountdown() {
-    const minutes = Math.floor(time / 60);
-    let seconds = time % 60;
-    if (minutes < 0) {
-        var cells = document.getElementsByClassName("rb");
+const end_time=document.getElementById('end-time')
+const countdown_1=document.getElementById('countdown_1')
+const time=Date.parse(end_time.textContent)
+const start_time=document.getElementById('start-time')
+console.log(time)
+
+setInterval((url) => {
+    const now=new Date().getTime()
+    const difference=time-now
+    const minutes=Math.floor((time/(1000*60)-(now/(1000*60)))%60)
+    let seconds=Math.floor((time/(1000)-(now/(1000)))%60)
+    seconds = seconds < 10 ? '0' + seconds : seconds
+    if (difference>0){
+        countdown_1.innerHTML=minutes+":" +seconds
+    }
+    else{
+        var cells = document.getElementsByClassName("rb")
         for (var i = 0; i < cells.length; i++) {
             cells[i].disabled = true;
-        }
-        countdownel.innerHTML = 'Timer over';
-        return;
+        countdown_1.innerHTML='Timer Over'     
     }
-    seconds = seconds < 10 ? '0' + seconds : seconds;
-    countdownel.innerHTML = `${minutes}: ${seconds}`;
-
-    
-    time--;
-
 }
-window.onbeforeunload = function() {
+    console.log(difference)
     
-    localStorage.setItem(countdown_1), $('#countdown1').val());
- }
+}, 1000);

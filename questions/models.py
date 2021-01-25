@@ -83,11 +83,10 @@ class UserProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     current_page = models.IntegerField(default=1)
     user_score = models.IntegerField(default=0)
-    user_time_login = models.DateTimeField(default=datetime.now(), blank=True)
+    user_time = models.DateTimeField(default=datetime.now(), blank=True)
+    user_end_time = models.DateTimeField(default=datetime.now())
     is_finished = models.BooleanField(default=False)
+    is_started=models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.username} Progress'
-
-
-
