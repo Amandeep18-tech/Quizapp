@@ -6,7 +6,7 @@ from django.shortcuts import reverse
 from django.shortcuts import get_object_or_404
 from .models import Profile
 from .forms import UserRegisterForm
-from questions.models import UserProgress, AnswerGiven
+from questions.models import UserProgress
 
 
 class SignUpView(SuccessMessageMixin, CreateView):

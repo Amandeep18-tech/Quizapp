@@ -3,12 +3,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.shortcuts import HttpResponseRedirect, reverse
+from datetime import datetime, timedelta
 from .models import UserProgress, MCQ, Question, AnswerGiven, FillInTheBlank
 from .decorators import does_user_has_permission
-from datetime import datetime, timedelta
 
 
-@method_decorator(does_user_has_permission(message='No access'), name='dispatch')
+@method_decorator(does_user_has_permission(message='No access to the quiz app. One attempt per user'), name='dispatch')
 class ExamListView(LoginRequiredMixin, ListView):
     """
 
@@ -26,8 +26,6 @@ class ExamListView(LoginRequiredMixin, ListView):
             "user_answer": request.POST.get('user_answer'),
             "question_id": request.POST.get('question_id')
         }
-
-        question_data = " "
         question_data = self.request.POST.get('user_answer', None)
         question_id = self.request.POST.get('question_id', None)
 
@@ -40,8 +38,6 @@ class ExamListView(LoginRequiredMixin, ListView):
             fill_in_the_blank = FillInTheBlank.objects.all()
             if question.is_mcq is True:
                 for mcq in mcq:
-                    print(question_data)
-
                     if question.id == mcq.question.id:
                         answer_given = AnswerGiven(
                             user=self.request.user, question=question,
@@ -65,10 +61,9 @@ class ExamListView(LoginRequiredMixin, ListView):
                         else:
                             answer_given.is_answer_correct = False
                         answer_given.save()
+
         total_count = Question.objects.all().count()
-
         if total_count == user_progress.current_page:
-
             user_progress.is_finished = True
             user_progress.save()
             return HttpResponseRedirect(reverse('result-page'))
@@ -89,6 +84,7 @@ class ExamListView(LoginRequiredMixin, ListView):
         if int(actual_page) == 1 and user_progress.is_started is False:
             total_minutes = Question.objects.all().count()
             user_progress.user_time = datetime.now()
+
             user_progress.user_end_time = user_progress.user_time + \
                 timedelta(minutes=total_minutes)
             user_progress.is_started = True
@@ -134,13 +130,10 @@ class ResultPageListView(LoginRequiredMixin, ListView):
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
         user_score = user_progress.user_score
-        total_questions = Question.objects.all().count()
-
-        fill_in_the_blank = FillInTheBlank.objects.all()
         context['quesion'] = Question.objects.all()
         context['mcq'] = MCQ.objects.all()
-        context['fill_in_the_blanks'] = fill_in_the_blank
+        context['fill_in_the_blanks'] = FillInTheBlank.objects.all()
         context['user_score'] = user_score
-        context['total_questions'] = total_questions
+        context['total_questions'] = Question.objects.all().count()
 
         return context

@@ -1,6 +1,5 @@
 from .models import UserProgress
 from django.shortcuts import get_object_or_404
-from users.models import User
 from django.shortcuts import HttpResponseRedirect, reverse
 from django.contrib import messages
 

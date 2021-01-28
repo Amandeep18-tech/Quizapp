@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
-from countdowntimer_model.models import CountdownTimer
 from datetime import datetime
 
 
@@ -86,7 +85,7 @@ class UserProgress(models.Model):
     user_time = models.DateTimeField(default=datetime.now(), blank=True)
     user_end_time = models.DateTimeField(default=datetime.now())
     is_finished = models.BooleanField(default=False)
-    is_started=models.BooleanField(default=False)
+    is_started = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.username} Progress'

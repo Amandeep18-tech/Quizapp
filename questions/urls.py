@@ -23,5 +23,5 @@ urlpatterns = [
     path('quiz/',
          ExamListView.as_view(), name='question-page'),
     path('results/', ResultPageListView.as_view(), name='result-page'),
-
+   
 ]
