@@ -1,17 +1,16 @@
 const end_time = document.getElementById('end-time')
 const countdown = document.getElementById('countdown')
 const start_time = document.getElementById('start-time')
-const start_time_milliseconds=Date.parse(start_time.textContent)
+
 
 function timer(url) {
     setInterval(() => {
         const now = new Date().getTime()
+
         const time_left = Date.parse(end_time.textContent)
         const difference = time_left - now
-        const minutes = Math.ceil((time_left / (1000 * 60) - (now / (1000 * 60))) % 60)
-        let seconds = Math.floor((time_left / (1000) - (now / (1000))) % 60)
-
-        
+        const minutes = Math.floor((time_left / (1000 * 60) - (now / (1000 * 60))) % 60)
+        let seconds = Math.ceil((time_left / (1000) - (now / (1000))) % 60)
         seconds = seconds < 10 ? '0' + seconds : seconds
         if (difference > 0) {
             countdown.innerHTML = minutes + ":" + seconds

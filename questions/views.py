@@ -5,10 +5,10 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import HttpResponseRedirect, reverse
 from datetime import datetime, timedelta
 from .models import UserProgress, MCQ, Question, AnswerGiven, FillInTheBlank
-from .decorators import does_user_has_permission
+from .decorators import does_user_has_permission, does_user_has_permission_for_result_page
 
 
-@method_decorator(does_user_has_permission(message='No access to the quiz app. One attempt per user'), name='dispatch')
+@method_decorator(does_user_has_permission(), name='dispatch')
 class ExamListView(LoginRequiredMixin, ListView):
     """
 
@@ -107,6 +107,7 @@ class ExamListView(LoginRequiredMixin, ListView):
         return context
 
 
+@method_decorator(does_user_has_permission_for_result_page(), name='dispatch')
 class ResultPageListView(LoginRequiredMixin, ListView):
     """
     View to represent user results
