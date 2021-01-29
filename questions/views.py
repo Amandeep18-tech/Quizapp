@@ -1,15 +1,22 @@
+from django.utils import decorators
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.shortcuts import HttpResponseRedirect, reverse
 from datetime import datetime, timedelta
+from django.contrib.auth.decorators import login_required
 from .models import UserProgress, MCQ, Question, AnswerGiven, FillInTheBlank
 from .decorators import does_user_has_permission, does_user_has_permission_for_result_page
+from django.contrib.auth.models import User
+
+decorators_for_exam_view = [login_required, does_user_has_permission()]
+decorators_for_result_view = [login_required,
+                              does_user_has_permission_for_result_page()]
 
 
-@method_decorator(does_user_has_permission(), name='dispatch')
-class ExamListView(LoginRequiredMixin, ListView):
+@method_decorator(decorators_for_exam_view, name='dispatch')
+class ExamListView(ListView):
     """
 
     view to represent all the questions in the database
@@ -55,7 +62,7 @@ class ExamListView(LoginRequiredMixin, ListView):
                         answer_given = AnswerGiven(
                             user=self.request.user, question=question,
                             user_answer_fill_in_the_blanks=question_data)
-                        if fill_in_the_blank.correct_answer_fill_in_the_blanks == question_data:
+                        if fill_in_the_blank.correct_answer_fill_in_the_blanks.upper() == question_data.upper():
                             answer_given.is_answer_correct = True
                             user_progress.user_score += 1
                         else:
@@ -99,6 +106,7 @@ class ExamListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ExamListView, self).get_context_data(**kwargs)
+
         user_progress = get_object_or_404(UserProgress,
                                           user=self.request.user)
         context['mcqs'] = MCQ.objects.all()
@@ -107,8 +115,8 @@ class ExamListView(LoginRequiredMixin, ListView):
         return context
 
 
-@method_decorator(does_user_has_permission_for_result_page(), name='dispatch')
-class ResultPageListView(LoginRequiredMixin, ListView):
+@method_decorator(decorators_for_result_view, name='dispatch')
+class ResultPageListView(ListView):
     """
     View to represent user results
     """
@@ -138,3 +146,8 @@ class ResultPageListView(LoginRequiredMixin, ListView):
         context['total_questions'] = Question.objects.all().count()
 
         return context
+
+
+class StartPage(ListView):
+    template_name = 'start_page.html'
+    model = User

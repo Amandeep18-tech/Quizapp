@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import ExamListView, ResultPageListView
+from .views import ExamListView, ResultPageListView, StartPage
 
 
 urlpatterns = [
@@ -23,5 +23,6 @@ urlpatterns = [
     path('quiz/',
          ExamListView.as_view(), name='question-page'),
     path('results/', ResultPageListView.as_view(), name='result-page'),
-   
+    path('', StartPage.as_view(), name='start-page'),
+
 ]

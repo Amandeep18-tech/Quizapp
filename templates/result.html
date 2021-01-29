@@ -32,13 +32,17 @@
               {% if answer_given.user_answer_mcq %}
               <br>
                 {% for mcq in mcq %}
+                  
                   {% if answer_given.question.id == mcq.question.id %}
+                  <br>{{answer_given.question }}
+                    <br>Option 1:{{ mcq.option1 }}
+                    <br>Option 2:{{ mcq.option2 }}
+                    <br>Option 3:{{ mcq.option3 }}
+                    <br>Option 4:{{ mcq.option4 }}
                     {% if answer_given.is_answer_correct == True %}
-                      <br>{{answer_given.question }} 
                       <br>Correct Answer
                       <br>Answer:Option {{answer_given.user_answer_mcq}}
                     {% else %}
-                      <br>{{answer_given.question }} 
                       <br>Incorrect Answer
                       <br>You choose Option {{answer_given.user_answer_mcq}}
                       <br>Correct Answer is {{mcq.correct_answer_mcq}}
@@ -52,7 +56,7 @@
                     {% if answer_given.is_answer_correct == True %}
                       <br>{{answer_given.question }} 
                       <br>Correct Answer
-                      <br>Answer:{{answer_given.user_answer_fill_in_the_blanks }}
+                      <br>Answer:{{fill_in_the_blank.correct_answer_fill_in_the_blanks }}
                     {% else %}
                       <br>{{answer_given.question }} 
                       <br>Incorrect Answer

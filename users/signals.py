@@ -9,4 +9,6 @@ from questions.models import UserProgress
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-    UserProgress.objects.get_or_create(user=instance)
+
+    UserProgress.objects.get_or_create(
+        user=instance)

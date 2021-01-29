@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Question(models.Model):
@@ -64,10 +64,12 @@ class AnswerGiven(models.Model):
         default="Your answer", max_length=200)
     user_answer_mcq = models.IntegerField(default=0)
     is_answer_correct = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return f'{self.question}'
 
+def get_deadline():
+    return datetime.now() + timedelta(days=30)
 
 class UserProgress(models.Model):
     """
@@ -82,10 +84,12 @@ class UserProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     current_page = models.IntegerField(default=1)
     user_score = models.IntegerField(default=0)
-    user_time = models.DateTimeField(default=datetime.now(), blank=True)
-    user_end_time = models.DateTimeField(default=datetime.now())
+    user_time = models.DateTimeField(default=get_deadline)
+    user_end_time = models.DateTimeField(default=get_deadline)
     is_finished = models.BooleanField(default=False)
     is_started = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.username} Progress'
+
+    
