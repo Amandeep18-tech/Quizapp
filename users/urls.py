@@ -16,10 +16,12 @@ Including another URLconf
 
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
 from users import views as user_views
 
 
 urlpatterns = [
+    path('', lambda req: redirect('login/')),
     path('register/', user_views.SignUpView.as_view(), name='register'),
     path('login/', user_views.CustomLoginView.as_view(redirect_authenticated_user=True),
          name='login'),

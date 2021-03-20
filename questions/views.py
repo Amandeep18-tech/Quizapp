@@ -7,8 +7,12 @@ from django.shortcuts import HttpResponseRedirect, reverse
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from .models import UserProgress, MCQ, Question, AnswerGiven, FillInTheBlank
-from .decorators import does_user_has_permission, does_user_has_permission_for_result_page
-from django.contrib.auth.models import User
+
+from .decorators import (
+    does_user_has_permission,
+    does_user_has_permission_for_result_page
+)
+
 
 decorators_for_exam_view = [login_required, does_user_has_permission()]
 decorators_for_result_view = [login_required,
@@ -41,10 +45,10 @@ class ExamListView(ListView):
 
         question = get_object_or_404(Question, id=question_id)
         if question_data is not None:
-            mcq = MCQ.objects.all()
-            fill_in_the_blank = FillInTheBlank.objects.all()
+            mcqs = MCQ.objects.all()
+            fill_in_the_blanks = FillInTheBlank.objects.all()
             if question.is_mcq is True:
-                for mcq in mcq:
+                for mcq in mcqs:
                     if question.id == mcq.question.id:
                         answer_given = AnswerGiven(
                             user=self.request.user, question=question,
@@ -56,7 +60,7 @@ class ExamListView(ListView):
                         answer_given.save()
 
             elif question.is_fill_in_the_blanks is True:
-                for fill_in_the_blank in fill_in_the_blank:
+                for fill_in_the_blank in fill_in_the_blanks:
                     if question.id == fill_in_the_blank.question.id:
 
                         answer_given = AnswerGiven(
@@ -146,8 +150,3 @@ class ResultPageListView(ListView):
         context['total_questions'] = Question.objects.all().count()
 
         return context
-
-
-class StartPage(ListView):
-    template_name = 'start_page.html'
-    model = User
