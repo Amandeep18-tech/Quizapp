@@ -57,3 +57,4 @@ def does_user_has_permission_for_result_page():
                 return view_func(request, *args, **kwargs)
         return wrap
     return decorator
+#End
